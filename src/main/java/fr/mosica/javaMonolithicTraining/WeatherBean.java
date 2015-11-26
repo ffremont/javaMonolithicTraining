@@ -13,6 +13,10 @@ public class WeatherBean implements Serializable {
 
     private String codePostal;
 
+    public String goToResult(){
+        return "welcome";
+    }
+    
     public String getCodePostal() {
         return codePostal;
     }

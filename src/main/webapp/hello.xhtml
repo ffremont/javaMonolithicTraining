@@ -12,7 +12,7 @@
 	<h3>Obtenir la météo de sa ville</h3>
 	<h:form>
 		<h:inputText value="#{weatherBean.codePostal}"></h:inputText>
-		<h:commandButton value="Welcome Me" action="welcome"></h:commandButton>
+		<h:commandButton value="Welcome Me" action="#{weatherBean.goToResult()}"></h:commandButton>
 	</h:form>
 </h:body>
 </html>
