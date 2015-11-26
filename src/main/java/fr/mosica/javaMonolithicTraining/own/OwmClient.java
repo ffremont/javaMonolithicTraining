@@ -53,6 +53,10 @@ public class OwmClient {
         return ownUrl;
     }
 
+    public void setOwnUrl(URL ownUrl) {
+        this.ownUrl = ownUrl;
+    }
+
     public ObjectMapper getJsonMapper() {
         return jsonMapper;
     }

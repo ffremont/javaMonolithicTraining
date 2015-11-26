@@ -13,6 +13,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import java.io.IOException;
 import java.net.URL;
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 
 /**
  *
@@ -23,18 +24,14 @@ public class OwmClientTest {
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(0);
     
+    /**
+     * Chemin de la ressource de l'api current weather de OWM
+     */
     private final static String WEATHER_API_PATH = "/current";
 
     @Test
     public void testGetWeather_Ok() throws IOException {        
-        stubFor(get(urlEqualTo(WEATHER_API_PATH)).willReturn(
-                aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-type", "application/json")
-                        .withBody( IOUtils.toByteArray( 
-                            Thread.currentThread().getContextClassLoader().getResourceAsStream("owm_weather_bessine_ok.json")
-                        ) )
-        ));
+        (new WeatherStub(WEATHER_API_PATH, 200, "owm_weather_bessines_ok.json")).stub();
         
         OwmClient client = new OwmClient(
             new URL(
@@ -47,6 +44,20 @@ public class OwmClientTest {
         WeatherResult weatherResult = client.getWeather();
         assertEquals("Bessines", weatherResult.getName());
         // TODO il faut développer le test
+    }
+    
+    @Test(expected = TechnicalException.class)
+    public void testGetWeather_404() throws IOException {        
+        (new WeatherStub(WEATHER_API_PATH, 404)).stub();
+        
+        OwmClient client = new OwmClient(
+            new URL(
+                "http://localhost:{port}{path}"
+                    .replace("{port}", String.valueOf(wireMockRule.port()))
+                    .replace("{path}", WEATHER_API_PATH)
+            )
+        );
+        client.getWeather();
     }
 
 }
